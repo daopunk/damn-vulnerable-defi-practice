@@ -21,10 +21,10 @@ contract TrusterLenderPool is ReentrancyGuard {
     }
 
     function flashLoan(
-        uint256 borrowAmount,
+        uint256 borrowAmount, // amount of token
         address borrower,
-        address target,
-        bytes calldata data
+        address target, // ER20 token contract
+        bytes calldata data // execution data
     )
         external
         nonReentrant
@@ -32,8 +32,8 @@ contract TrusterLenderPool is ReentrancyGuard {
         uint256 balanceBefore = damnValuableToken.balanceOf(address(this));
         require(balanceBefore >= borrowAmount, "Not enough tokens in pool");
         
-        damnValuableToken.transfer(borrower, borrowAmount);
-        target.functionCall(data);
+        damnValuableToken.transfer(borrower, borrowAmount); // lend funds
+        target.functionCall(data); // execute calldata
 
         uint256 balanceAfter = damnValuableToken.balanceOf(address(this));
         require(balanceAfter >= balanceBefore, "Flash loan hasn't been paid back");
