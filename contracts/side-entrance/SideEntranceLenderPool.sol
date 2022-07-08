@@ -20,6 +20,10 @@ contract SideEntranceLenderPool {
         balances[msg.sender] += msg.value;
     }
 
+    function checkBalance() external view returns (uint256 bal) {
+        bal = balances[msg.sender];
+    }
+
     function withdraw() external {
         uint256 amountToWithdraw = balances[msg.sender];
         balances[msg.sender] = 0;

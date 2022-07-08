@@ -6,7 +6,7 @@ interface ITrusterLenderPool {
 }
 
 contract AttackTruster {
-  ITrusterLenderPool public pool;
+  ITrusterLenderPool internal pool;
   address owner;
   address token;
 

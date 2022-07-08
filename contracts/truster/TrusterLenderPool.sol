@@ -33,10 +33,9 @@ contract TrusterLenderPool is ReentrancyGuard {
         require(balanceBefore >= borrowAmount, "Not enough tokens in pool");
         
         damnValuableToken.transfer(borrower, borrowAmount); // lend funds
-        target.functionCall(data); // execute calldata
+        target.functionCall(data); // execute calldata on target contract
 
         uint256 balanceAfter = damnValuableToken.balanceOf(address(this));
         require(balanceAfter >= balanceBefore, "Flash loan hasn't been paid back");
     }
-
 }
