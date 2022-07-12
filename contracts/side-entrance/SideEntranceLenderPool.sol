@@ -3,6 +3,7 @@
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/Address.sol";
 
+// this contract doesn't exist, but it's function definition(s)' logic needs to be created
 interface IFlashLoanEtherReceiver {
     function execute() external payable;
 }
@@ -34,6 +35,7 @@ contract SideEntranceLenderPool {
         uint256 balanceBefore = address(this).balance;
         require(balanceBefore >= amount, "Not enough ETH in balance");
         
+        // create attack contract, call execute from attack contract (msg.sender is typecast to the attack contract, so what the execute function logic is in the attacker contract will run)
         IFlashLoanEtherReceiver(msg.sender).execute{value: amount}();
 
         require(address(this).balance >= balanceBefore, "Flash loan hasn't been paid back");        

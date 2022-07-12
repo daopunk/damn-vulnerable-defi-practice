@@ -66,17 +66,22 @@ contract TheRewarderPool {
         uint256 rewards = 0;
 
         if(isNewRewardsRound()) {
+            // snap new round information
             _recordSnapshot();
         }        
         
         uint256 totalDeposits = accToken.totalSupplyAt(lastSnapshotIdForRewards);
         uint256 amountDeposited = accToken.balanceOfAt(msg.sender, lastSnapshotIdForRewards);
 
+        // if user deposited funds at last snapshot, determine reward
         if (amountDeposited > 0 && totalDeposits > 0) {
             rewards = (amountDeposited * 100 * 10 ** 18) / totalDeposits;
 
+            // if reward for current round has not been collected, then mint reward
             if(rewards > 0 && !_hasRetrievedReward(msg.sender)) {
+                // mint reward
                 rewardToken.mint(msg.sender, rewards);
+                // update timestamp / prevent minting until next round
                 lastRewardTimestamps[msg.sender] = block.timestamp;
             }
         }
@@ -92,7 +97,9 @@ contract TheRewarderPool {
 
     function _hasRetrievedReward(address account) private view returns (bool) {
         return (
+            // is it the same or new block?
             lastRewardTimestamps[account] >= lastRecordedSnapshotTimestamp &&
+            // is it less than or equal to round time period 
             lastRewardTimestamps[account] <= lastRecordedSnapshotTimestamp + REWARDS_ROUND_MIN_DURATION
         );
     }
